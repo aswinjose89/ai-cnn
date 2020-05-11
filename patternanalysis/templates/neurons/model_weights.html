@@ -1,0 +1,21 @@
+<h5 class="card-title text-center">Model Neurons Visualizer</h5>
+<form method="post" enctype="multipart/form-data">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="model">Model File</label>
+                    <input type="file" name="model_weight_file" class="form-control-file" id="model" required>
+                    <small class="form-text text-muted">Select the Keras Model file to show the neurons.File format (.H5)</small>
+                  </div>
+            </div>
+        </div>
+          <div class="row">
+              <div class="col-md-6">
+                  <button type="submit" class="btn btn-primary">Process Weight</button>
+              </div>
+          </div>
+      </div>
+    </div>
+</form>

@@ -1,0 +1,77 @@
+<h5 class="card-title text-center">Model Neurons Visualizer</h5>
+<form method="post" enctype="multipart/form-data">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="ipImg">Input Image</label>
+                    <input type="file" name="input_img" class="form-control-file" id="ipImg" required>
+                    <small class="form-text text-muted">Select the input image to show the neurons.</small>
+                  </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="model">Model File</label>
+                    <input type="file" name="model_file" class="form-control-file" id="model" multiple required>
+                    <small class="form-text text-muted">Select the Keras Model file to show the neurons.File format (.H5)</small>
+                  </div>
+            </div>
+        </div>
+          <div class="row">
+              <div class="col-md-6">
+                  <button type="submit" class="btn btn-primary">Process Neurons</button>
+              </div>
+          </div>
+      </div>
+    </div>
+{% if all_model_neurons|length > 0  %}
+    <div class="card">
+        <h5 class="card-title text-center">Neurons</h5>
+      <div class="card-body">
+          <div class="row">
+              {% for model in all_model_neurons %}
+                 <div class="col-md-3">
+                     <ul class="list-group">
+                          <li class="list-group-item"><strong>Model File:</strong> {{ model.model_file_name }}</li>
+                          <li class="list-group-item"><strong>View Model Flow:</strong> <u><a href="/{{ model.model_plot_path }}" target="_blank">View Flow</a></u></li>
+                    </ul>
+                    {% for layer in model.model_neurons %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ul class="list-group">
+                                  <li class="list-group-item"><strong>LayerName:</strong> {{ layer.name }}</li>
+                                  <li class="list-group-item"><strong>Filters:</strong> {{ layer.filters }}</li>
+                                  <li class="list-group-item"><strong>Total Neurons:</strong> {{ layer.layer_neurons | length }}</li>
+                                </ul>
+                                <ul class="list-group">
+                                    {% for neuron in layer.layer_neurons %}
+                                        <li class="list-group-item">
+                                            <img src="data:image/jpeg;base64,{{ neuron|safe }}" height="200px" width="200px" class="rounded">
+                                        </li>
+                                    {% endfor%}
+                                </ul>
+                            </div>
+                        </div>
+                    <hr class="my-4">
+                  {% endfor%}
+                 </div>
+              {% endfor%}
+
+          </div>
+      </div>
+    </div>
+{% endif %}
+</form>
+
+
+ <br/>
+{% if original_img_url %}
+ <h1>Uploaded image</h1>
+     <div class="card" style="width: 25rem;margin-left: auto;margin-right: auto;">
+       <img src="{{original_img_url}}" class="card-img-top" alt="...">
+       <div class="card-body">
+         <strong>FilePath:</strong> <a href="{{original_img_url}}">{{original_img_url}}</a>
+       </div>
+     </div>
+{% endif %}

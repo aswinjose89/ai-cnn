@@ -1,0 +1,14 @@
+<input type="file" name="investigator_file">
+<button type="submit" class="btn btn-primary">Process Selected Algorithm</button>
+ <br/>
+{% if original_img_url %}
+ <h1>Uploaded image</h1>
+     <div class="card" style="width: 25rem;margin-left: auto;margin-right: auto;">
+       <img src="{{original_img_url}}" class="card-img-top" alt="...">
+       <div class="card-body">
+         <strong>FilePath:</strong> <a href="{{original_img_url}}">{{original_img_url}}</a>
+       </div>
+     </div>
+{% endif %}
+
+

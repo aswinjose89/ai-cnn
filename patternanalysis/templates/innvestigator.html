@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="jumbotron">
+          <h1 class="display-4 text-center">Innvestigator!</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <strong style="font-size: 23pt;"><u>Algorithms</u></strong><br/><br/><br/><br/>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-8">
+                    <select multiple="multiple" size="10" name="innvestAlgm" class="demo2" required>
+                        {% for algms in algorithms %}
+                            <option value="{{ algms }}">{{ algms }}</option>
+                        {% endfor %}
+                      </select>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                      <label style="font-weight: bold;">Activation Function</label>
+                      <select class="form-control" name="activationName">
+                        {% for actvn in activation_fn %}
+                            <option value="{{ actvn }}">{{ actvn }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="row text-center">
+                <div class="col-md-3"></div>
+                <div class="col-md-6" style="border:2px dotted black;padding:10px">
+                    {% include "file_upload.html" %}
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+            {% if result_data.input_img_url %}
+                <hr class="my-4">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-3">
+                        <h1>Input Image</h1>
+                        <div class="card" style="width: 25rem;">
+                          <img src="/{{result_data.input_img_url}}" class="card-img-top" alt="...">
+                          <div class="card-body">
+                            <strong>FilePath:</strong> <a href="/{{result_data.input_img_url}}" target="_blank">{{result_data.input_img_name}}</a>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h1> Status Details</h1>
+                        <div class="table-responsive-md">
+                            <table class="table table-striped">
+                                      <thead class="thead-dark">
+                                        <tr>
+                                          <th scope="col">#</th>
+                                          <th scope="col">Condition</th>
+                                          <th scope="col">Status</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                      {% for status_details in result_data.status_details %}
+                                        <tr>
+                                              <th scope="row">{{ forloop.counter }}</th>
+                                              <td> {{ status_details.condition }} </td>
+                                              <td>{{ status_details.status }}</td>
+                                        </tr>
+                                      {% endfor%}
+                                      </tbody>
+                                    </table>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if result_data.trained_output %}
+                <hr class="my-4">
+                <h1>Output Images</h1>
+                <div class="row">
+                    {% for trained_op in result_data.trained_output %}
+                        <div class="col-md-4" style="margin-top: 15px;">
+                            <div class="card" style="width: 35rem;">
+                              <img src="/{{trained_op.op_img_path}}" class="card-img-top" alt="...">
+                              <div class="card-body">
+                                <h5 class="card-title"><strong>Algorithm:</strong> {{trained_op.algm}}</h5>
+                                <strong>FilePath:</strong> <a href="/{{trained_op.op_img_path}}" target="_blank">{{trained_op.op_img_name}}</a>
+                                  <div><strong>Before Analyzer Prediction</strong></div>
+                                  <table class="table table-striped">
+                                      <thead>
+                                        <tr>
+                                          <th scope="col">#</th>
+                                          <th scope="col">Prediction</th>
+                                          <th scope="col">Confidence</th>
+                                          <th scope="col">Class</th>
+                                          <th scope="col">Status</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {% for prediction in trained_op.before_analyzer_prediction %}
+                                            <tr>
+                                              <th scope="row">{{ forloop.counter }}</th>
+                                                {% if prediction.bg_color == 'green' %}
+                                                    <td><span style="background-color: green;color: rgb(255, 255, 255);">{{prediction.description}}</span></td>
+                                                {% else %}
+                                                    <td><span style="background-color: red;color: rgb(255, 255, 255);">{{prediction.description}}</span></td>
+                                                {% endif %}
+                                              <td>{{prediction.confidence}}</td>
+                                              <td>{{prediction.class}}</td>
+                                              <td>{{prediction.status}}</td>
+                                            </tr>
+                                        {% endfor%}
+                                      </tbody>
+                                    </table>
+                                  <strong>After Analyzer Prediction</strong>
+                                  <div class="table-responsive-md">
+                                      <table class="table table-striped">
+                                          <thead>
+                                            <tr>
+                                              <th scope="col">#</th>
+                                              <th scope="col">Prediction</th>
+                                              <th scope="col">Confidence</th>
+                                              <th scope="col">Class</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            {% for prediction in trained_op.after_analyzer_prediction %}
+                                                <tr>
+                                                  <th scope="row">{{ forloop.counter }}</th>
+                                                    {% if prediction.bg_color == 'green' %}
+                                                        <td><span style="background-color: green;color: rgb(255, 255, 255);">{{prediction.description}}</span></td>
+                                                    {% else %}
+                                                        <td><span style="background-color: red;color: rgb(255, 255, 255);">{{prediction.description}}</span></td>
+                                                    {% endif %}
+                                                  <td>{{prediction.confidence}}</td>
+                                                  <td>{{prediction.class}}</td>
+                                                  <td>{{prediction.status}}</td>
+                                                </tr>
+                                            {% endfor%}
+                                          </tbody>
+                                        </table>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                     {% endfor%}
+                </div>
+            {% endif %}
+        </form>
+    </div>
+{% endblock %}

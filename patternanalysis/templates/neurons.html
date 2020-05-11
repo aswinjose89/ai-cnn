@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="jumbotron">
+          <h1 class="display-4 text-center">Model Neurons!</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="container-fluid">
+                <div class="card">
+                  <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                      <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#neurons" role="tab" aria-controls="home" aria-selected="true">Input Neurons</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#weight" role="tab" aria-controls="profile" aria-selected="false">Model Weight</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Model Summary Chart</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="card-body">
+                      <div class="tab-content" id="myTabContent">
+                          <div class="tab-pane fade show active" id="neurons" role="tabpanel" aria-labelledby="home-tab">
+                              {% include "neurons/neurons_visualizer.html" %}
+                          </div>
+                          <div class="tab-pane fade" id="weight" role="tabpanel" aria-labelledby="profile-tab">
+                              {% include "neurons/model_weights.html" %}
+                          </div>
+                          <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">eeee</div>
+                    </div>
+
+                  </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
