@@ -1,45 +1,91 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="jumbotron">
+<!-- Header -->
+<header id="header" class="header">
+    <div class="header-content">
+    </div> <!-- end of header-content -->
+</header> <!-- end of header -->
+<!-- end of header -->
+
+    <div class="container-fluid">
           <h1 class="display-4 text-center">Innvestigator!</h1>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row">
+              <div class="col-md-1"></div>
+              <div class="col-md-2">
                 <strong style="font-size: 23pt;"><u>Algorithms</u></strong><br/><br/><br/><br/>
+              </div>
+
             </div>
+            <div class="row text-center">
+              <div class="col-md-1"></div>
+                <div class="col-md-4">
+                  <strong>Upload Image</strong>
+                  <input type="file" class="form-control" name="investigator_file">
+                </div>
+                <div class="col-md-1" style="margin-top: auto;margin-bottom: auto;">
+                    <strong>OR</strong>
+                </div>
+                <div class="col-md-4">
+                  <strong for="people">Sample Image List</strong><br/>
+                  <select class="form-control" name="sample_img" id="sample_img">
+                    {% for img in sample_img %}
+                        <option  data-class="avatar" data-style="background: url({{ img.path }});" value="{{ img }}">{{ img.file }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <br/>
+            <br/>
             <div class="row">
                 <div class="col-md-1"></div>
-                <div class="col-md-8">
-                    <select multiple="multiple" size="10" name="innvestAlgm" class="demo2" required>
+                <div class="col-md-9">
+                    <select multiple="multiple" size="10" name="innvestAlgm" class="form-group demo2" required>
                         {% for algms in algorithms %}
                             <option value="{{ algms }}">{{ algms }}</option>
                         {% endfor %}
                       </select>
                 </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                      <label style="font-weight: bold;">Activation Function</label>
-                      <select class="form-control" name="activationName">
-                        {% for actvn in activation_fn %}
-                            <option value="{{ actvn }}">{{ actvn }}</option>
-                        {% endfor %}
-                      </select>
-                    </div>
+                <div class="col-md-1"></div>
+            </div>
+            <br/><br/>
+            <div class="row text-center">
+              <div class="col-md-4">
                 </div>
+                <div class="col-md-4">
+                  <strong>Activation Function</strong>
+                  <select class="form-control" name="activationName">
+                    {% for actvn in activation_fn %}
+                        <option value="{{ actvn }}">{{ actvn }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  </div>
             </div>
             <br/>
-            <div class="row text-center">
-                <div class="col-md-3"></div>
-                <div class="col-md-6" style="border:2px dotted black;padding:10px">
-                    {% include "file_upload.html" %}
+            <br/>
+            <div class="row">
+              <div class="col-md-9">
                 </div>
-                <div class="col-md-3"></div>
+              <div class="col-md-2">
+                 <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                <div class="col-md-1">
+                  </div>
             </div>
+            <br/>
+            <div class="row">
+                {% include "file_upload.html" %}
+            </div>
+
             {% if result_data.input_img_url %}
                 <hr class="my-4">
                 <div class="row">
-                    <div class="col-md-2"></div>
-                    <div class="col-md-3">
+                  <div class="col-md-1"></div>
+                    <div class="col-md-5">
                         <h1>Input Image</h1>
                         <div class="card" style="width: 25rem;">
                           <img src="/{{result_data.input_img_url}}" class="card-img-top" alt="...">
@@ -48,7 +94,7 @@
                           </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <h1> Status Details</h1>
                         <div class="table-responsive-md">
                             <table class="table table-striped">
@@ -71,6 +117,7 @@
                                     </table>
                         </div>
                     </div>
+                    <div class="col-md-1"></div>
                 </div>
             {% endif %}
             {% if result_data.trained_output %}

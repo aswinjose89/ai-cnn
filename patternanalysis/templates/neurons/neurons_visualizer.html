@@ -1,28 +1,61 @@
 <h5 class="card-title text-center">Model Neurons Visualizer</h5>
-<form method="post" enctype="multipart/form-data">
     <div class="card">
       <div class="card-body">
         <div class="row">
+          <div class="col-md-6">
+              <div class="form-group">
+                  <strong>Model File</strong>
+                  <input type="file" name="model_file" class="form-control-file" id="model" multiple>
+                  <small class="form-text text-muted">Select the Keras Model file to show the neurons.File format (.H5)</small>
+                </div>
+          </div>
+          <div class="col-md-1" style="margin-top: auto;margin-bottom: auto;"><strong>OR</strong></div>
+          <div class="col-md-5">
+            <div class="form-group">
+                <strong>Trained Models</strong>
+                <select class="form-control" name="trainedModelName" multiple>
+                  {% for model in trained_models %}
+                      <option value="{{ model }}">{{ model.file }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+          </div>
+        </div>
+          <br/>
+        <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="ipImg">Input Image</label>
-                    <input type="file" name="input_img" class="form-control-file" id="ipImg" required>
+                    <strong>Input Image</strong>
+                    <input type="file" name="input_img" class="form-control-file" id="ipImg">
                     <small class="form-text text-muted">Select the input image to show the neurons.</small>
                   </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="model">Model File</label>
-                    <input type="file" name="model_file" class="form-control-file" id="model" multiple required>
-                    <small class="form-text text-muted">Select the Keras Model file to show the neurons.File format (.H5)</small>
-                  </div>
+            <div class="col-md-1" style="margin-top: auto;margin-bottom: auto;"><strong>OR</strong></div>
+            <div class="col-md-5">
+                <strong for="people">Sample Image List</strong><br/>
+                  <select class="form-control" name="sample_img" id="sample_img">
+                    {% for img in sample_img %}
+                        <option  data-class="avatar" data-style="background: url({{ img.path }});" value="{{ img }}">{{ img.file }}</option>
+                    {% endfor %}
+                  </select>
             </div>
         </div>
+          <br/>
           <div class="row">
+            <div class="col-md-6">
+            </div>
               <div class="col-md-6">
                   <button type="submit" class="btn btn-primary">Process Neurons</button>
               </div>
           </div>
+          <br/>
+          {% if status == "error"  %}
+              <div class="row">
+                  <div class="col-md-12">
+                      <span style="color: red;font-size: 12pt;font-family: cursive;">Error: <i>{{msg}}</i></span>
+                </div>
+              </div>
+          {% endif %}
       </div>
     </div>
 {% if all_model_neurons|length > 0  %}
@@ -62,7 +95,6 @@
       </div>
     </div>
 {% endif %}
-</form>
 
 
  <br/>

@@ -13,5 +13,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('image-processor', views.ImageAnalyzerView.as_view(), name="image_processor"),
     path('neurons', views.ModelNeuronView.as_view(), name="neurons"),
+    path('modal-weight', views.ModelWeightView.as_view(), name="modal_weight"),
     path('articles', views.ArticleView.as_view(), name="articles")
 ]

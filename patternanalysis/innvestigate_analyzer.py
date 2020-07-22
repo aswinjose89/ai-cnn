@@ -80,7 +80,7 @@ class InnvestigateAnalyzer(object):
         features = self.model.predict(x)
         print('Predicted:', self.decode_predictions(features, top=3)[0])
 
-    def analyzer(self, algms = algms, image_name = "img_source/zebra.jpg", activation= "linear"):
+    def analyzer(self, algms = algms, image_name = "img_source/zebra.jpg",src_img_path= None, activation= "linear"):
         result_data= {}
         files_ip = glob.glob(os.path.join(base_path,'media/input/*'))
         for f in files_ip:
@@ -88,9 +88,7 @@ class InnvestigateAnalyzer(object):
         files_op = glob.glob(os.path.join(base_path,'media/output/*'))
         for f in files_op:
             os.remove(f)
-
-
-        image_path = os.path.join(base_path, "media/{}".format(image_name))
+        image_path = os.path.join(base_path, "media/{}".format("{}{}".format(src_img_path, image_name)))
         image = load_image(image_path, 224)
         # Code snippet.
         plt.imshow(image/255)
