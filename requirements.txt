@@ -168,3 +168,4 @@ widgetsnbextension==3.5.1
 wrapt==1.12.1
 zc.lockfile==2.0
 zipp==3.1.0
+django-log-viewer==1.0.6

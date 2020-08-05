@@ -25,7 +25,7 @@ SECRET_KEY = 's2loq4y4-$k^&l*h@$9wena!m*ccns-urvgmocs7ystiu-&_sx'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['*']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'patternanalysis',
     'innvestigate',
+    'log_viewer'
 ]
 
 MIDDLEWARE = [
@@ -130,3 +131,72 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+LOG_PATH = os.path.join(BASE_DIR, "logger")
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'file':{
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'verbose',
+            'filename': '{}/cnn_logger.log'.format(LOG_PATH)
+        },
+        'patternanalysis':{
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'verbose',
+            'filename': '{}/patternanalysis.log'.format(LOG_PATH)
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'tasks.tasks': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'SVGProcess': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'MainLogger': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'patternanalysis': {
+            'handlers': ['patternanalysis'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+
+    },
+    'formatters': {
+        'verbose': {
+            'format': '[%(levelname)s] - %(asctime)s - %(processName)s - %(funcName)s - %(message)s'
+        }
+
+    }
+}
+
+LOG_VIEWER_FILES = ['patternanalysis.log', 'cnn_logger.log']
+LOG_VIEWER_FILES_DIR = LOG_PATH
+LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
+LOG_VIEWER_PAGE_LENGTH = 25       # total log lines per-page

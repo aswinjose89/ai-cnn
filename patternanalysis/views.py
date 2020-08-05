@@ -3,6 +3,8 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.views import APIView
+import logging
+logger = logging.getLogger(__package__)
 # Create your views here.
 from mlflow import log_metric, log_param, log_artifact, set_tracking_uri, set_experiment, start_run, end_run
 import mlflow.keras
@@ -39,36 +41,39 @@ class ImageAnalyzerView(BaseView):
         context = self.get_context_data(*args, **kwargs)
         post_data = request.POST
         if request.FILES.get('investigator_file') or post_data.get("sample_img"):
-            myfile = request.FILES.get('investigator_file')
-            innvestAlgm = post_data.getlist("innvestAlgm")
-            activationName = post_data.getlist("activationName")
-            sampleImg = post_data.get("sample_img")
-            if myfile:
-                fs = FileSystemStorage()
-                filename = fs.save(myfile.name, myfile)
-                uploaded_file_url = fs.url(filename)
-                src_img_path= None
-            else:
-                sampleImg = eval(post_data.get("sample_img"))
-                uploaded_file_url = sampleImg.get("path")
-                filename = sampleImg.get("file")
-                src_img_path= "sample_img/"
-            remote_server_uri = settings.MLFLOW_URL # set to your server URI
-            set_tracking_uri(remote_server_uri)
-            set_experiment("/ai-back-propagation")
-            with start_run():
-                mlflow.keras.autolog()
-                log_param("Selected Algorithms", innvestAlgm)
-                log_param("Activation Function Name", activationName)
-                log_param("image_name", filename)
-                innvestigateObj = InnvestigateAnalyzer()
-                result_data = innvestigateObj.analyzer(algms = innvestAlgm, image_name = filename, src_img_path= src_img_path, activation= activationName)
-                context["original_img_url"] = uploaded_file_url
-                context["input_img_url"] = glob.glob('media/input/*')
-                context["output_img_url"] = glob.glob('media/output/*')
-                context["result_data"] = result_data
-                end_run()
-                return render(request, "innvestigator.html", context)
+            try:
+                myfile = request.FILES.get('investigator_file')
+                innvestAlgm = post_data.getlist("innvestAlgm")
+                activationName = post_data.getlist("activationName")
+                sampleImg = post_data.get("sample_img")
+                if myfile:
+                    fs = FileSystemStorage()
+                    filename = fs.save(myfile.name, myfile)
+                    uploaded_file_url = fs.url(filename)
+                    src_img_path= None
+                else:
+                    sampleImg = eval(post_data.get("sample_img"))
+                    uploaded_file_url = sampleImg.get("path")
+                    filename = sampleImg.get("file")
+                    src_img_path= "sample_img/"
+                remote_server_uri = settings.MLFLOW_URL # set to your server URI
+                set_tracking_uri(remote_server_uri)
+                set_experiment("/ai-back-propagation")
+                with start_run():
+                    mlflow.keras.autolog()
+                    log_param("Selected Algorithms", innvestAlgm)
+                    log_param("Activation Function Name", activationName)
+                    log_param("image_name", filename)
+                    innvestigateObj = InnvestigateAnalyzer()
+                    result_data = innvestigateObj.analyzer(algms = innvestAlgm, image_name = filename, src_img_path= src_img_path, activation= activationName)
+                    context["original_img_url"] = uploaded_file_url
+                    context["input_img_url"] = glob.glob('media/input/*')
+                    context["output_img_url"] = glob.glob('media/output/*')
+                    context["result_data"] = result_data
+                    end_run()
+                    return render(request, "innvestigator.html", context)
+            except Exception as ex:
+                logger.error("ClassName: ImageAnalyzerView, Exception: %s" % ex)
         return render(request, "innvestigator.html", context)
 
 
@@ -98,89 +103,95 @@ class ModelNeuronView(BaseView):
             trainedModelWeight = post_data.get("trainedModelWeight")
             sampleImg = post_data.get("sample_img")
             if (input_img and model_file_list) or (sampleImg and trainedModelName):
-                if model_file_list:
-                    uploaded_model_file_url_list, uploaded_ip_img_file_url= self.file_storage(input_img, model_file_list)
-                elif trainedModelName:
-                    sampleImg = eval(post_data.get("sample_img"))
-                    uploaded_ip_img_file_url = '{}/{}/{}'.format(settings.MEDIA_ROOT, "sample_img", sampleImg.get('file'))
-                    uploaded_model_file_url_list= []
-                    for model in trainedModelName:
-                        model_path = '{}/{}/{}'.format(settings.MEDIA_ROOT, "sample_models", eval(model).get('file'))
-                        uploaded_model_file_url_list.append(model_path)
+                try:
+                    if model_file_list:
+                        uploaded_model_file_url_list, uploaded_ip_img_file_url= self.file_storage(input_img, model_file_list)
+                    elif trainedModelName:
+                        sampleImg = eval(post_data.get("sample_img"))
+                        uploaded_ip_img_file_url = '{}/{}/{}'.format(settings.MEDIA_ROOT, "sample_img", sampleImg.get('file'))
+                        uploaded_model_file_url_list= []
+                        for model in trainedModelName:
+                            model_path = '{}/{}/{}'.format(settings.MEDIA_ROOT, "sample_models", eval(model).get('file'))
+                            uploaded_model_file_url_list.append(model_path)
 
-                all_model_neurons= []
-                for uploaded_model_file_url in uploaded_model_file_url_list:
-                    #Loading model
-                    trained_model = load_model(uploaded_model_file_url)
-                    img_path = uploaded_ip_img_file_url
-                    img_width, img_height = trained_model.input_shape[1], trained_model.input_shape[2]
-                    img = image.load_img(img_path, target_size=(img_width, img_height))
-                    img_tensor = image.img_to_array(img)
-                    img_tensor = np.expand_dims(img_tensor, axis=0)
-                    img_tensor /= 255.
+                    all_model_neurons= []
+                    for uploaded_model_file_url in uploaded_model_file_url_list:
+                        #Loading model
+                        trained_model = load_model(uploaded_model_file_url)
+                        img_path = uploaded_ip_img_file_url
+                        img_width, img_height = trained_model.input_shape[1], trained_model.input_shape[2]
+                        img = image.load_img(img_path, target_size=(img_width, img_height))
+                        img_tensor = image.img_to_array(img)
+                        img_tensor = np.expand_dims(img_tensor, axis=0)
+                        img_tensor /= 255.
 
-                    layer_outputs = [layer.output for layer in trained_model.layers]
-                    activation_model = models.Model(inputs=trained_model.input, outputs=layer_outputs)
-                    activations = activation_model.predict(img_tensor)
-                    model_neurons= []
-                    for i in range(len(activation_model.layers)):
-                        layer= activation_model.layers[i]
-                        layer_config= layer.get_config()
-                        if "filters" in layer_config: #It help to extract only convolution layer
-                            temp= {}
-                            temp["filters"]= layer.filters
-                            temp["name"]= layer.name
-                            temp["layer_neurons"]= []
-                            for val in range(layer.filters):
-                                plt.matshow(activations[i][0, :, :,val], cmap='viridis')
-                                plt.axis('off')
-                                fig= plt.gcf()
-                                buf= io.BytesIO()
-                                fig.savefig(buf, format="jpeg")
-                                buf.seek(0)
-                                string= base64.b64encode(buf.read())
-                                uri= urllib.parse.quote(string)
-                                temp["layer_neurons"].append(uri)
-                            model_neurons.append(temp)
-                    model_file_name= uploaded_model_file_url.split("/")[-1]
-                    model_plot_path= self.model_plot(trained_model, model_file_name.split(".")[0])
-                    all_model_neurons.append({"model_neurons": model_neurons, "model_plot_path": model_plot_path, "model_file_name": model_file_name})
-                    # plt.matshow(activations[12][0, :, :,1], cmap='viridis')
-                context["all_model_neurons"]= all_model_neurons
-            if model_weight_file or trainedModelWeight:
-                if model_weight_file:
-                    uploaded_model_weight_file_url = self.save_model(model_weight_file)
-                else:
-                    uploaded_model_weight_file_url = '{}/{}/{}'.format(settings.MEDIA_ROOT, "sample_models", eval(trainedModelWeight).get('file'))
-                loaded_model = load_model(uploaded_model_weight_file_url)
-                model_weights= loaded_model.get_weights()
-                model_neurons= []
-                for i in range(len(loaded_model.layers)):
-                    layer= loaded_model.layers[i]
-                    layer_config= layer.get_config()
-                    if "filters" in layer_config: #It help to extract only convolution layer
-                        temp= {}
-                        temp["filters"]= layer.filters
-                        temp["name"]= layer.name
-                        temp["layer_neurons"]= []
-                        for val in range(layer.filters):
-                            plt.figure()
-                            plt.matshow(activations[i][0, :, :,val], cmap='viridis')
-                            plt.axis('off')
-                            fig= plt.gcf()
-                            buf= io.BytesIO()
-                            fig.savefig(buf, format="jpeg")
-                            buf.seek(0)
-                            string= base64.b64encode(buf.read())
-                            uri= urllib.parse.quote(string)
-                            temp["layer_neurons"].append(uri)
-                        model_neurons.append(temp)
-            if False:
-                from keras.utils.vis_utils import plot_model
-                plot_model(trained_model, to_file='media/models/model_plot.png', show_shapes=True, show_layer_names=True)
+                        layer_outputs = [layer.output for layer in trained_model.layers]
+                        activation_model = models.Model(inputs=trained_model.input, outputs=layer_outputs)
+                        activations = activation_model.predict(img_tensor)
+                        model_neurons= []
+                        for i in range(len(activation_model.layers)):
+                            layer= activation_model.layers[i]
+                            layer_config= layer.get_config()
+                            if "filters" in layer_config: #It help to extract only convolution layer
+                                temp= {}
+                                temp["filters"]= layer.filters
+                                temp["name"]= layer.name
+                                temp["layer_neurons"]= []
+                                for val in range(layer.filters):
+                                    plt.matshow(activations[i][0, :, :,val], cmap='viridis')
+                                    plt.axis('off')
+                                    fig= plt.gcf()
+                                    buf= io.BytesIO()
+                                    fig.savefig(buf, format="jpeg")
+                                    buf.seek(0)
+                                    string= base64.b64encode(buf.read())
+                                    uri= urllib.parse.quote(string)
+                                    temp["layer_neurons"].append(uri)
+                                model_neurons.append(temp)
+                        model_file_name= uploaded_model_file_url.split("/")[-1]
+                        model_plot_path= self.model_plot(trained_model, model_file_name.split(".")[0])
+                        all_model_neurons.append({"model_neurons": model_neurons, "model_plot_path": model_plot_path, "model_file_name": model_file_name})
+                        # plt.matshow(activations[12][0, :, :,1], cmap='viridis')
+                    context["all_model_neurons"]= all_model_neurons
+                except Exception as ex:
+                    context["msg"] = "Uploaded model file is not supported. Make sure you are uploading Keras sequential model set.."
+                    context["status"] = "error"
+                    logger.error("ClassName: ModelNeuronView,  Exception: %s" % ex)
             else:
                 context["msg"] = "Please upload image and model file or choose trained model and sample image"
                 context["status"] = "error"
+            # if model_weight_file or trainedModelWeight:
+            #     if model_weight_file:
+            #         uploaded_model_weight_file_url = self.save_model(model_weight_file)
+            #     else:
+            #         uploaded_model_weight_file_url = '{}/{}/{}'.format(settings.MEDIA_ROOT, "sample_models", eval(trainedModelWeight).get('file'))
+            #     loaded_model = load_model(uploaded_model_weight_file_url)
+            #     model_weights= loaded_model.get_weights()
+            #     model_neurons= []
+            #     for i in range(len(loaded_model.layers)):
+            #         layer= loaded_model.layers[i]
+            #         layer_config= layer.get_config()
+            #         if "filters" in layer_config: #It help to extract only convolution layer
+            #             temp= {}
+            #             temp["filters"]= layer.filters
+            #             temp["name"]= layer.name
+            #             temp["layer_neurons"]= []
+            #             for val in range(layer.filters):
+            #                 plt.figure()
+            #                 plt.matshow(activations[i][0, :, :,val], cmap='viridis')
+            #                 plt.axis('off')
+            #                 fig= plt.gcf()
+            #                 buf= io.BytesIO()
+            #                 fig.savefig(buf, format="jpeg")
+            #                 buf.seek(0)
+            #                 string= base64.b64encode(buf.read())
+            #                 uri= urllib.parse.quote(string)
+            #                 temp["layer_neurons"].append(uri)
+            #             model_neurons.append(temp)
+            # if False:
+            #     from keras.utils.vis_utils import plot_model
+            #     plot_model(trained_model, to_file='media/models/model_plot.png', show_shapes=True, show_layer_names=True)
+
         return render(request, "neurons.html", context)
 
     def model_plot(self, trained_model, model_file_name):

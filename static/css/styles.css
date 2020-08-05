@@ -1665,13 +1665,14 @@ a:hover.back-to-top {
 
 	.navbar-custom .nav-item .nav-link {
 		padding: 0.25rem 0.75rem 0.25rem 0.75rem;
-		color: #fff;
+		color: #272323;
 		opacity: 0.8;
+    font-weight: bolder;
 	}
 
 	.navbar-custom .nav-item .nav-link:hover,
 	.navbar-custom .nav-item .nav-link.active {
-		color: #fff;
+		color: green;
 		opacity: 1;
 	}
 
