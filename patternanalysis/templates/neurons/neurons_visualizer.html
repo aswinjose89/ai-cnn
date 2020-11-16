@@ -64,7 +64,7 @@
       <div class="card-body">
           <div class="row">
               {% for model in all_model_neurons %}
-                 <div class="col-md-3">
+                 <div class="{% if all_model_neurons|length > 1 %}col-md-3 {% else %} col-md-12 {% endif %}">
                      <ul class="list-group">
                           <li class="list-group-item"><strong>Model File:</strong> {{ model.model_file_name }}</li>
                           <li class="list-group-item"><strong>View Model Flow:</strong> <u><a href="/{{ model.model_plot_path }}" target="_blank">View Flow</a></u></li>
@@ -90,10 +90,34 @@
                                       <li class="list-group-item"><strong>Filters:</strong> {{ layer.filters }}</li>
                                       <li class="list-group-item"><strong>Total Neurons:</strong> {{ layer.layer_neurons | length }}</li>
                                     </ul>
-                                    <ul class="list-group">
+                                    <ul class="{% if all_model_neurons|length > 1 %}list-group {% else %} list-group dp-i-blk {% endif %}">
                                         {% for neuron in layer.layer_neurons %}
-                                            <li class="list-group-item">
-                                                <img src="data:image/jpeg;base64,{{ neuron|safe }}" height="200px" width="200px" class="rounded">
+                                            <li class="{% if all_model_neurons|length > 1 %}list-group-item {% else %} list-group-item dp-content {% endif %}">
+                                                <img src="data:image/jpeg;base64,{{ neuron.plot|safe }}" height="200px" width="200px" class="rounded">
+
+                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modelWeight{{ forloop.counter }}">
+                                                  Show Weights
+                                                </button>
+                                                        <div class="modal fade" id="modelWeight{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                          <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                            <div class="modal-content">
+                                                              <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Neuron Weight</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                  <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                              </div>
+                                                              <div class="modal-body">
+                                                                  <div class="overflow-auto">
+                                                                      {{ neuron.weights|safe }}
+                                                                  </div>
+                                                              </div>
+                                                              <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
                                             </li>
                                         {% endfor%}
                                     </ul>

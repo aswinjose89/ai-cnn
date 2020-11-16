@@ -22,6 +22,8 @@ import numpy as np
 from keras import models
 from aivalidation.views import BaseView
 import tensorflow as tf
+import sys
+np.set_printoptions(threshold=sys.maxsize)
 
 from .innvestigate_analyzer import InnvestigateAnalyzer
 
@@ -136,9 +138,11 @@ class ModelNeuronView(BaseView):
                                 temp= {}
                                 temp["filters"]= layer.filters
                                 temp["name"]= layer.name
+                                temp["shape"] = layer.shape
                                 temp["layer_neurons"]= []
                                 for val in range(layer.filters):
                                     plt.matshow(activations[i][0, :, :,val], cmap='viridis')
+                                    plt.title('Neuron %s' %(val+1,))
                                     plt.axis('off')
                                     fig= plt.gcf()
                                     buf= io.BytesIO()
@@ -146,13 +150,15 @@ class ModelNeuronView(BaseView):
                                     buf.seek(0)
                                     string= base64.b64encode(buf.read())
                                     uri= urllib.parse.quote(string)
-                                    temp["layer_neurons"].append(uri)
+                                    temp["layer_neurons"].append({"plot": uri, "weights": activations[i][0, :, :,val]})
                                 model_neurons.append(temp)
                             elif layer.name.startswith("dense") or layer.name.startswith("flatten"):
                                 temp = {}
                                 temp["name"] = layer.name
+                                temp["shape"] = layer.shape
                                 temp["layer_neurons"] = []
                                 plt.matshow(activations[i], cmap='viridis')
+                                plt.title('Neuron %s' % (val + 1,))
                                 plt.axis('off')
                                 fig = plt.gcf()
                                 buf = io.BytesIO()
@@ -160,7 +166,7 @@ class ModelNeuronView(BaseView):
                                 buf.seek(0)
                                 string = base64.b64encode(buf.read())
                                 uri = urllib.parse.quote(string)
-                                temp["layer_neurons"].append(uri)
+                                temp["layer_neurons"].append({"plot": uri, "weights": str(activations[i][0, :, :,val])})
 
                                 model_neurons.append(temp)
 

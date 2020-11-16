@@ -2142,3 +2142,10 @@ a:hover.back-to-top {
     font-weight: 800;
     font-size: 14pt
 }
+
+.dp-i-blk{
+    display: inline-block !important;
+}
+.dp-content{
+    display: contents !important;
+}
