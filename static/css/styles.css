@@ -2128,3 +2128,17 @@ a:hover.back-to-top {
   .form-group .required .control-label:after {
     content:"*";color:red;
   }
+
+.prediction-label-red{
+    background-color: #efa0a0;
+    color: #292525;
+    font-weight: 800;
+    font-size: 14pt
+}
+
+.prediction-label-green{
+    background-color: #98e498;
+    color: #292525;
+    font-weight: 800;
+    font-size: 14pt
+}

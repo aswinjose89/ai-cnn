@@ -148,6 +148,22 @@ class ModelNeuronView(BaseView):
                                     uri= urllib.parse.quote(string)
                                     temp["layer_neurons"].append(uri)
                                 model_neurons.append(temp)
+                            elif layer.name.startswith("dense") or layer.name.startswith("flatten"):
+                                temp = {}
+                                temp["name"] = layer.name
+                                temp["layer_neurons"] = []
+                                plt.matshow(activations[i], cmap='viridis')
+                                plt.axis('off')
+                                fig = plt.gcf()
+                                buf = io.BytesIO()
+                                fig.savefig(buf, format="jpeg")
+                                buf.seek(0)
+                                string = base64.b64encode(buf.read())
+                                uri = urllib.parse.quote(string)
+                                temp["layer_neurons"].append(uri)
+
+                                model_neurons.append(temp)
+
                         model_file_name= uploaded_model_file_url.split("/")[-1]
                         model_plot_path= self.model_plot(trained_model, model_file_name.split(".")[0])
                         all_model_neurons.append({"model_neurons": model_neurons, "model_plot_path": model_plot_path, "model_file_name": model_file_name})

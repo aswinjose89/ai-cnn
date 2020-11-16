@@ -69,25 +69,40 @@
                           <li class="list-group-item"><strong>Model File:</strong> {{ model.model_file_name }}</li>
                           <li class="list-group-item"><strong>View Model Flow:</strong> <u><a href="/{{ model.model_plot_path }}" target="_blank">View Flow</a></u></li>
                     </ul>
-                    {% for layer in model.model_neurons %}
-                        <div class="row">
-                            <div class="col-md-12">
-                                <ul class="list-group">
-                                  <li class="list-group-item"><strong>LayerName:</strong> {{ layer.name }}</li>
-                                  <li class="list-group-item"><strong>Filters:</strong> {{ layer.filters }}</li>
-                                  <li class="list-group-item"><strong>Total Neurons:</strong> {{ layer.layer_neurons | length }}</li>
-                                </ul>
-                                <ul class="list-group">
-                                    {% for neuron in layer.layer_neurons %}
-                                        <li class="list-group-item">
-                                            <img src="data:image/jpeg;base64,{{ neuron|safe }}" height="200px" width="200px" class="rounded">
-                                        </li>
-                                    {% endfor%}
-                                </ul>
-                            </div>
+                    <div class="accordion" id="accordionExample">
+                        {% for layer in model.model_neurons %}
+
+
+                        <div class="card">
+                        <div class="card-header" id="headingOne">
+                          <h2 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapseOne">
+                              <strong>LayerName:</strong> {{ layer.name }}
+                            </button>
+                          </h2>
                         </div>
-                    <hr class="my-4">
+
+                        <div id="collapse{{ forloop.counter }}" class="collapse {% if forloop.first %}show{% endif %}" aria-labelledby="headingOne" data-parent="#accordionExample">
+                          <div class="row">
+                                <div class="col-md-12">
+                                    <ul class="list-group">
+                                      <li class="list-group-item"><strong>LayerName:</strong> {{ layer.name }}</li>
+                                      <li class="list-group-item"><strong>Filters:</strong> {{ layer.filters }}</li>
+                                      <li class="list-group-item"><strong>Total Neurons:</strong> {{ layer.layer_neurons | length }}</li>
+                                    </ul>
+                                    <ul class="list-group">
+                                        {% for neuron in layer.layer_neurons %}
+                                            <li class="list-group-item">
+                                                <img src="data:image/jpeg;base64,{{ neuron|safe }}" height="200px" width="200px" class="rounded">
+                                            </li>
+                                        {% endfor%}
+                                    </ul>
+                                </div>
+                          </div>
+                        </div>
+                      </div>
                   {% endfor%}
+                    </div>
                  </div>
               {% endfor%}
 

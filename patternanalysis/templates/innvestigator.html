@@ -8,7 +8,7 @@
 <!-- end of header -->
 
     <div class="container-fluid">
-          <h1 class="display-4 text-center">Innvestigator for CNN</h1>
+          <h1 class="display-4 text-center">CNN Analyzer</h1>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row">
@@ -95,7 +95,7 @@
                         </div>
                     </div>
                     <div class="col-md-5">
-                        <h1> Status Details</h1>
+                        <h1> Status Details (Confidence Level)</h1>
                         <div class="table-responsive-md">
                             <table class="table table-striped">
                                       <thead class="thead-dark">
@@ -122,14 +122,15 @@
             {% endif %}
             {% if result_data.trained_output %}
                 <hr class="my-4">
-                <h1>Output Images</h1>
+                <h1>Analysis Of Output Images</h1>
                 <div class="row">
                     {% for trained_op in result_data.trained_output %}
                         <div class="col-md-4" style="margin-top: 15px;">
                             <div class="card" style="width: 35rem;">
+                            </br>
+                                <h5 class="card-title text-center"><strong>Algorithm:</strong> {{trained_op.algm}}</h5>
                               <img src="/{{trained_op.op_img_path}}" class="card-img-top" alt="...">
                               <div class="card-body">
-                                <h5 class="card-title"><strong>Algorithm:</strong> {{trained_op.algm}}</h5>
                                 <strong>FilePath:</strong> <a href="/{{trained_op.op_img_path}}" target="_blank">{{trained_op.op_img_name}}</a>
                                   <div><strong>Before Analyzer Prediction</strong></div>
                                   <table class="table table-striped">
@@ -147,9 +148,9 @@
                                             <tr>
                                               <th scope="row">{{ forloop.counter }}</th>
                                                 {% if prediction.bg_color == 'green' %}
-                                                    <td><span style="background-color: green;color: rgb(255, 255, 255);">{{prediction.description}}</span></td>
+                                                    <td><span class="prediction-label-green">{{prediction.description}}</span></td>
                                                 {% else %}
-                                                    <td><span style="background-color: red;color: rgb(255, 255, 255);">{{prediction.description}}</span></td>
+                                                    <td><span class="prediction-label-red">{{prediction.description}}</span></td>
                                                 {% endif %}
                                               <td>{{prediction.confidence}}</td>
                                               <td>{{prediction.class}}</td>
@@ -174,9 +175,9 @@
                                                 <tr>
                                                   <th scope="row">{{ forloop.counter }}</th>
                                                     {% if prediction.bg_color == 'green' %}
-                                                        <td><span style="background-color: green;color: rgb(255, 255, 255);">{{prediction.description}}</span></td>
+                                                        <td><span class="prediction-label-green">{{prediction.description}}</span></td>
                                                     {% else %}
-                                                        <td><span style="background-color: red;color: rgb(255, 255, 255);">{{prediction.description}}</span></td>
+                                                        <td><span class="prediction-label-red">{{prediction.description}}</span></td>
                                                     {% endif %}
                                                   <td>{{prediction.confidence}}</td>
                                                   <td>{{prediction.class}}</td>
