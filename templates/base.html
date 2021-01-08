@@ -94,7 +94,7 @@
                     <a class="nav-link page-scroll" href="http://localhost:{{MLFLOW_PORT}}/#/" target="_blank">Mlflow</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link page-scroll" href="https://playground.tensorflow.org/" target="_blank">Neurons Playground</a>
+                    <a class="nav-link page-scroll" href="/visualizer/data-visualizer">Visualizer</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link page-scroll" href="/admin/log_viewer/" target="_blank">Exception Logger</a>
@@ -105,7 +105,9 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="terms-conditions.html"><span class="item-text">Terms Conditions</span></a>
                         <div class="dropdown-items-divide-hr"></div>
-                        <a class="dropdown-item" href="privacy-policy.html"><span class="item-text">Privacy Policy</span></a>
+                        <a class="dropdown-item" href="/admin/log_viewer/" target="_blank"><span class="item-text">Exception Logger</span></a>
+                        <div class="dropdown-items-divide-hr"></div>
+                        <a class="dropdown-item" href="https://playground.tensorflow.org/" target="_blank">Neurons Playground</a>
                     </div>
                 </li>
             </ul>
@@ -578,5 +580,6 @@
     <script src="{% static 'src/scripts.js' %}"></script> <!-- Custom scripts -->
     <script src="{% static 'libs/dualbox/jquery.bootstrap-duallistbox.js' %}"></script>
     <script src="{% static 'src/patternanalysis.js' %}"></script>
+    <script src="{% static 'src/visualizer.js' %}"></script>
 </body>
 </html>

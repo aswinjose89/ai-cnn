@@ -25,7 +25,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('admin/log_viewer/', include('log_viewer.urls')),
     path('', views.BaseView.as_view(), name="ai_validator"),
-    path('analysis/', include('patternanalysis.urls'))
+    path('analysis/', include('patternanalysis.urls')),
+    path('visualizer/', include('visualizer.urls'))
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

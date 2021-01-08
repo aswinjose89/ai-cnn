@@ -1,0 +1,13 @@
+<div class="col-md-2"></div>
+<div class="col-md-8">
+  {% if original_img_url %}
+   <h1>Uploaded image</h1>
+       <div class="card" style="width: 25rem;margin-left: auto;margin-right: auto;">
+         <img src="{{original_img_url}}" class="card-img-top" alt="...">
+         <div class="card-body">
+           <strong>FilePath:</strong> <a href="{{original_img_url}}">{{original_img_url}}</a>
+         </div>
+       </div>
+  {% endif %}
+</div>
+<div class="col-md-2"></div>

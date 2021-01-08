@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'patternanalysis',
     'innvestigate',
-    'log_viewer'
+    'log_viewer',
+    'visualizer'
 ]
 
 MIDDLEWARE = [

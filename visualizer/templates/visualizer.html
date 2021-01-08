@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- Header -->
+<header id="header" class="header">
+    <div class="header-content">
+    </div> <!-- end of header-content -->
+</header> <!-- end of header -->
+<!-- end of header -->
+
+    <div class="container-fluid">
+          <h1 class="display-4 text-center">Data Visualizer</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+<!--            <div class="row">-->
+<!--              <div class="col-md-1"></div>-->
+<!--              <div class="col-md-2">-->
+<!--                <strong style="font-size: 23pt;"><u>Algorithms</u></strong><br/><br/><br/><br/>-->
+<!--              </div>-->
+
+<!--            </div>-->
+            <div class="row text-center">
+              <div class="col-md-1"></div>
+                <div class="col-md-4">
+                  <strong>Upload File</strong>
+                  <input type="file" class="form-control" name="data_file">
+                     <input type="hidden" name="hidden_file_path" value="{{ hidden_file_path }}">
+                </div>
+                <div class="col-md-1" style="margin-top: auto;margin-bottom: auto;">
+                    <strong>OR</strong>
+                </div>
+                <div class="col-md-4">
+                  <strong for="people">List of Data Files</strong><br/>
+                  <select class="form-control" name="sample_img" id="sample_img">
+                    {% for img in sample_img %}
+                        <option  data-class="avatar" data-style="background: url({{ img.path }});" value="{{ img }}">{{ img.file }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <br/>
+            <br/>
+            <div class="row">
+              <div class="col-md-9">
+                </div>
+              <div class="col-md-2">
+                 <button type="submit" class="btn btn-primary">Upload File</button>
+                </div>
+                <div class="col-md-1">
+                  </div>
+            </div>
+            <br/>
+            <br/>
+            {% if ml_scatter_plot %}
+                {% for plt in ml_scatter_plot %}
+                <h4 for="people" style="text-align:center"> {{ plt.col_name}}</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        {{ plt.plot|safe }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+            {% if is_uploaded %}
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-9">
+                        <strong for="people">List of Columns</strong><br/>
+                        <select multiple="multiple" size="10" name="columns" class="form-group demo2">
+                            {% for col in columns %}
+                                <option value="{{ col }}">{{ col }}</option>
+                            {% endfor %}
+                          </select>
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+                <br/>
+                <br/>
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-9">
+                        <strong for="people">List of Plot Types</strong><br/>
+                        <select multiple="multiple" size="10" name="plot_types" class="form-group demo2">
+                            {% for type in plot_types %}
+                                <option value="{{ type.value }}">{{ type.label }}</option>
+                            {% endfor %}
+                          </select>
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+                <br/><br/>
+                <div class="row">
+                  <div class="col-md-9">
+                    </div>
+                  <div class="col-md-2">
+                     <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                    <div class="col-md-1">
+                      </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-md-1"></div>
+                      <div class="col-md-10">
+                        {% if all_plots %}
+                            {% for col_plts in all_plots %}
+                                <div class="row">
+                                    <h4>{{col_plts.col_name}}</h4>
+                                    {% for plt in col_plts.plots %}
+                                        <div class="col-md-12">
+                                            {{ plt.div|safe }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-center">No graph was found.</p>
+                        {% endif %}
+                      </div>
+                    <div class="col-md-1"></div>
+                </div>
+            {% endif %}
+        </form>
+    </div>
+{% endblock %}

@@ -11,4 +11,7 @@ Helps to validate the model using investigator and evaluate each neuron level vi
 
 ### Screenshot3 of Modal Neurons
 
-![N|Solid](./static/images/screenshot/neurons.png)
+![N|Solid](./static/images/screenshot/neurons.png) 
+
+### kubernetes
+  - Resource limit https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
