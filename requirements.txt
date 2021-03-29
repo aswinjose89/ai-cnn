@@ -110,7 +110,7 @@ py==1.8.1
 pyasn1==0.4.8
 pycparser==2.20
 pydot==1.4.1
-Pygments==2.6.1
+Pygments==2.7.4
 pygtrie==2.3.2
 pyparsing==2.4.6
 pyrsistent==0.16.0
